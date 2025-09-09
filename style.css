@@ -1,0 +1,1074 @@
+:root {
+    --primary-color: #007BFF;
+    --primary-hover: #0056b3;
+    --correct-color: #28a745;
+    --incorrect-color: #dc3545;
+    --background-color: #f0f2f5;
+    --text-color: #333;
+    --light-text-color: #fff;
+    --container-bg: #fff;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: url('https://play.rosebud.ai/assets/Basketball Arena.PNG?IH6G') no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+}
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
+}
+
+#game-container {
+    width: 95%;
+    max-width: 450px;
+    height: 100vh;
+    max-height: 900px;
+    background-color: #000;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+}
+
+/* Screen Management */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: opacity 0.4s ease-in-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+    background: url('https://play.rosebud.ai/assets/Basketball Arena.PNG?IH6G') no-repeat center center;
+    background-size: cover;
+}
+.screen.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+/* Start/End Screens */
+#start-screen .screen-content, #end-screen .screen-content {
+    z-index: 3;
+    height: 100%;
+    justify-content: space-between;
+}
+.screen-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    width: 100%;
+    flex-grow: 1;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+}
+/* Landing Screen */
+#landing-screen {
+    justify-content: flex-start;
+    align-items: stretch;
+    position: relative;
+    padding: 0;
+    overflow-y: auto;
+    background: 
+        url('https://rosebud.ai/assets/SHAMMGOD Backdrop 1080.png?UhCl') no-repeat left top,
+        url('https://play.rosebud.ai/assets/Basketball Arena.png?8Xx7') no-repeat right top,
+        url('https://play.rosebud.ai/assets/Basketball Arena.png?8Xx7') no-repeat center top;
+    background-size: auto 100%, 50% 100%, cover;
+}
+#landing-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.1) 40%, transparent 60%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.1) 100%);
+    z-index: 1;
+}
+.landing-header {
+    width: 50%;
+    z-index: 2;
+    text-align: center;
+    flex-shrink: 0;
+    padding: 20px 0;
+    margin-left: auto;
+}
+.landing-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 50%;
+    flex-grow: 1;
+    justify-content: center;
+    z-index: 2;
+    margin-left: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+    /* These styles are no longer used since the elements were removed */
+}
+.subtitle {
+    font-size: 1.1rem;
+    color: #e0e0e0;
+    margin: 0 0 20px 0;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+}
+.focus-pill {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 3;
+    backdrop-filter: blur(5px);
+}
+.focus-pill.hidden {
+    display: none;
+}
+/* Strategy Choice */
+.strategy-choice {
+    background-color: rgba(10, 10, 10, 0.8);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+}
+.strategy-choice h3 {
+    color: var(--light-text-color);
+    margin: 0 0 15px 0;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+}
+.choice-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.btn-choice {
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+.btn-choice:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+.btn-choice.selected {
+    background-color: var(--correct-color);
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+}
+.main-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px;
+}
+#how-to-play {
+    background-color: rgba(10, 10, 10, 0.75);
+    border-radius: var(--border-radius);
+    padding: 15px 20px;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    flex-shrink: 0;
+    max-width: 500px;
+}
+#how-to-play h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    color: var(--light-text-color);
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+#how-to-play ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#how-to-play li {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding-left: 22px;
+    position: relative;
+    color: #e0e0e0;
+}
+#how-to-play li::before {
+    content: '🏀';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    font-size: 0.8rem;
+}
+.final-score-display {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 4rem;
+    color: var(--light-text-color);
+    line-height: 1;
+}
+.high-score-display {
+    font-size: 1rem;
+    color: var(--light-text-color);
+    background-color: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+}
+#high-score-display-end {
+    margin-bottom: 20px;
+}
+/* Buttons */
+.btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 150px;
+}
+.start-actions {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 500px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+.btn:active {
+    transform: translateY(0px) scale(0.98);
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.2);
+}
+.btn-secondary {
+    background-color: #6c757d;
+    color: var(--light-text-color);
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+.btn-back-home {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #D2B48C; /* Wooden color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    min-width: auto;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+.btn-back-home:hover {
+    background-color: #C1A37E;
+    transform: translateX(-50%) translateY(-2px);
+}
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 250px;
+    align-items: center;
+}
+.button-group .btn {
+    width: 100%;
+}
+/* Practice Screen */
+#practice-screen {
+    justify-content: flex-start;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    background-image: url("https://rosebud.ai/assets/Basketball%20Arena.png?8Xx7");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.practice-gradient-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 25vh;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(to top, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 60%);
+}
+#practice-hud {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: var(--container-bg);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+#boost-container {
+    text-align: center;
+}
+#boost-indicator {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+.boost-off {
+    color: #6c757d;
+    background-color: rgba(108, 117, 125, 0.2);
+}
+.boost-on {
+    color: #fff;
+    background-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+    animation: boost-pulse 0.5s ease-in-out infinite alternate;
+}
+@keyframes boost-pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+/* Court Area */
+#court-area {
+    flex-grow: 1;
+    position: relative;
+    background: transparent; /* Remove redundant background */
+    overflow: hidden;
+    min-height: 300px;
+}
+.player {
+    position: absolute;
+    text-align: center;
+    transition: all 0.8s ease-in-out;
+}
+.player-sprite {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+.player-name {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+#player1 {
+    top: 20%;
+    left: 20%;
+}
+#player2 {
+    top: 60%;
+    right: 20%;
+}
+.basketball {
+    position: absolute;
+    font-size: 1.5rem;
+    transition: all 0.5s ease-in-out;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: ball-bounce 2s ease-in-out infinite;
+}
+@keyframes ball-bounce {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -60%) scale(1.1); }
+}
+.sneaker-pickup {
+    position: absolute;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: float 2s ease-in-out infinite;
+    top: 30%;
+    right: 30%;
+}
+.sneaker-pickup:hover {
+    transform: scale(1.2);
+}
+.sneaker-pickup.hidden {
+    display: none;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+/* Coaching Controls */
+#coaching-controls {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    text-align: center;
+    z-index: 2; /* Ensure it's above the gradient */
+}
+.btn-coaching {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 200px;
+}
+.btn-coaching:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+.btn-coaching:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+#drill-status {
+    margin-top: 10px;
+    color: #e0e0e0;
+    font-style: italic;
+}
+#practice-feedback {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease-out;
+    opacity: 0;
+    pointer-events: none;
+}
+#practice-feedback.show {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+}
+
+#timer-container, #score-container {
+    text-align: center;
+    position: relative;
+}
+#practice-hud span, #hud span {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+#practice-hud div div, #hud div div {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--primary-color);
+    line-height: 1;
+}
+#game-timer-container.urgent div {
+    color: var(--incorrect-color);
+    animation: timer-pulse 1s ease-in-out infinite;
+}
+@keyframes timer-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+#score.animate-score, #game-score.animate-score {
+    animation: score-pulse 0.4s ease-out;
+}
+@keyframes score-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(-5deg); color: var(--correct-color); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+#game-screen {
+    justify-content: flex-start;
+    padding: 0;
+    background: url('https://rosebud.ai/assets/Basketball Arena.png?8Xx7') no-repeat center center;
+    background-size: contain;
+}
+#game-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+#game-screen .screen-content,
+#game-screen #hud,
+#game-screen #game-content,
+#game-screen .btn-back-home {
+    position: relative;
+    z-index: 2;
+}
+#hud {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    background: var(--container-bg);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+#game-content {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    background: transparent; /* Remove redundant background */
+}
+#scenario-container {
+    padding: 0 20px;
+    box-sizing: border-box;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+#scenario-image-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #e9ecef;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #adb5bd;
+    font-weight: bold;
+}
+#scenario-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+#scenario-text {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    min-height: 50px;
+    margin-bottom: auto; /* Push options down if there is space */
+    color: var(--light-text-color);
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 8px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+#options-container {
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px; /* Replaces margin-top: auto */
+    padding: 0 20px 20px 20px; /* Consolidate padding */
+    box-sizing: border-box;
+    width: 100%;
+    flex-shrink: 0; /* Prevent options from shrinking */
+    overflow-y: auto; /* Allow scrolling if options overflow */
+    padding-bottom: 20px;
+}
+
+.option-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 2px solid transparent;
+    color: var(--text-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+.option-btn:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    background-color: rgba(221, 232, 245, 0.9);
+}
+.option-btn:active {
+    transform: scale(0.98);
+}
+.option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+.option-btn.correct {
+    background-color: var(--correct-color);
+    color: white;
+    border-color: #23923d;
+}
+.option-btn.incorrect {
+    background-color: var(--incorrect-color);
+    color: white;
+    border-color: #c72e3d;
+}
+#feedback {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease-out;
+    opacity: 0;
+}
+#feedback.show {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+}
+/* Points Feedback Animation */
+.points-feedback {
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    transform: translateX(-50%);
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    pointer-events: none;
+    animation: float-up 1.2s ease-out forwards;
+}
+.points-feedback.plus {
+    color: var(--correct-color);
+}
+.points-feedback.minus {
+    color: var(--incorrect-color);
+}
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -40px);
+    }
+}
+/* Media Queries for larger screens */
+@media (min-height: 851px), (min-width: 421px) {
+    #game-container {
+        height: 850px;
+        max-height: 850px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        max-width: 900px; /* Much wider for desktop */
+    }
+    .start-body {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+    }
+    .start-body {
+        align-items: stretch; /* Make items same height */
+    }
+    #how-to-play, .start-actions {
+        flex-basis: 45%;
+        max-width: 400px;
+        height: fit-content;
+        align-self: center; /* Center vertically within the row */
+    }
+    
+    .start-actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 25px;
+    }
+    #game-content {
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 20px;
+    }
+    #scenario-container {
+        flex: 1 1 55%; /* Grow and shrink, basis 55% */
+        height: 100%;
+        padding: 0 20px 0 0;
+    }
+    #options-container {
+        flex: 1 1 45%; /* Grow and shrink, basis 45% */
+        height: 100%;
+        margin-top: 0;
+        padding-top: 20px;
+        padding-left: 0;
+        justify-content: center; /* Center options vertically */
+    }
+}
+/* Extra wide screens */
+@media (min-width: 1200px) {
+    #game-container {
+        max-width: 1000px;
+    }
+}
+/* Confetti Celebration */
+#confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-color);
+    opacity: 0;
+}
+.is-celebrating .confetti {
+    animation: confetti-fall 3s ease-out forwards;
+}
+@keyframes confetti-fall {
+    0% {
+        opacity: 1;
+        transform: translateY(-10vh) rotate(var(--start-rot));
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(calc(var(--start-rot) + 720deg));
+    }
+}
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 0 10px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.btn-icon:hover {
+    opacity: 1;
+}
+#pause-screen {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(5px);
+}
+#pause-screen .screen-content {
+    justify-content: center;
+}
+#end-screen .button-group, #result-screen .button-group {
+    margin-top: auto;
+    padding-bottom: 20px;
+    width: 100%;
+    max-width: 300px;
+}
+#result-screen {
+    background: url('https://rosebud.ai/assets/Basketball Arena.png?8Xx7') no-repeat center center;
+    background-size: cover;
+}
+#result-screen .screen-content {
+    justify-content: center;
+}
+#result-title {
+    color: var(--light-text-color);
+    margin-bottom: 20px;
+}
+/* Sneaker Drop Screen */
+.sneaker-hero {
+    text-align: center;
+    max-width: 400px;
+}
+.sneaker-image {
+    font-size: 8rem;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+.sneaker-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin: 0 0 15px 0;
+}
+.sneaker-desc {
+    color: var(--light-text-color);
+    font-size: 1rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+#sneaker-drop-screen, #press-reactions-screen {
+    background: url('https://rosebud.ai/assets/Basketball Arena.png?8Xx7') no-repeat center center;
+    background-size: cover;
+}
+#sneaker-drop-screen::before, #press-reactions-screen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+}
+#sneaker-drop-screen .screen-content, #press-reactions-screen .screen-content {
+    z-index: 2;
+}
+.sneaker-features {
+    text-align: left;
+    color: #e0e0e0;
+    margin-bottom: 30px;
+}
+.feature {
+    margin: 8px 0;
+    font-size: 1rem;
+}
+/* Press Reactions Screen */
+.press-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 15px 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+.press-card h3 {
+    color: var(--primary-color);
+    margin: 0 0 10px 0;
+    font-family: 'Bebas Neue', cursive;
+}
+.press-card p {
+    color: var(--light-text-color);
+    margin: 0;
+    line-height: 1.5;
+}
+/* Result Screen */
+.performance-text {
+    color: var(--light-text-color);
+    font-size: 1rem;
+    margin: 15px 0;
+    max-width: 400px;
+    line-height: 1.6;
+}
+/* Enhanced buttons */
+.btn-large {
+    padding: 18px 35px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    min-width: 200px;
+}
+/* Mobile optimizations */
+@media (max-width: 480px) {
+    .choice-buttons {
+        flex-direction: column;
+    }
+    .btn-choice {
+        width: 100%;
+    }
+    .main-actions {
+        max-width: 280px;
+    }
+    .btn-coaching {
+        min-width: 180px;
+        padding: 12px 25px;
+        font-size: 1.1rem;
+    }
+}
+/* Modals */
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(5px);
+    transition: opacity 0.3s ease;
+}
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.modal-content {
+    background-color: #1a1a1a;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+    color: var(--light-text-color);
+}
+.modal-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin: 0 0 25px 0;
+}
+.modal-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+/* Strategy Modal */
+.strategy-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.strategy-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.strategy-card:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+}
+.strategy-card.selected {
+    background-color: rgba(0, 123, 255, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+}
+.strategy-card h3 {
+    margin: 0 0 10px 0;
+    color: var(--light-text-color);
+}
+.strategy-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+.strategy-card ul li {
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 5px;
+}
+.strategy-card ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+/* Motivation Modal */
+.motivation-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.modal-disclaimer {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 20px;
+    font-style: italic;
+}
+.speech-text-area {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    text-align: left;
+    line-height: 1.6;
+    color: #e0e0e0;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.speech-text-area span {
+    opacity: 0;
+    animation: text-reveal 0.5s forwards;
+}
+@keyframes text-reveal {
+    to { opacity: 1; }
+}
+.modal-overlay .hidden {
+    display: none;
+}
