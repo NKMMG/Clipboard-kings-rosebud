@@ -46,7 +46,6 @@ const buttons = {
     playDemo: document.getElementById('play-demo-btn'),
     sneakerDrop: document.getElementById('sneaker-drop-btn'),
     pressReactions: document.getElementById('press-reactions-btn'),
-    practiceMode: document.getElementById('practice-mode-btn'),
     unlockFullGame: document.getElementById('unlock-full-game-btn'),
     callPlay: document.getElementById('call-play-btn'),
     sneakerPickup: document.getElementById('sneaker-pickup'),
@@ -54,7 +53,6 @@ const buttons = {
     replay: document.getElementById('replay-btn'),
     learnMore: document.getElementById('learn-more-btn'),
     sneakerBack: document.getElementById('sneaker-back-btn'),
-    replayDrill: document.getElementById('replay-drill-btn'),
     pressBack: document.getElementById('press-back-btn'),
     backToHomeResults: document.getElementById('back-to-home-results-btn'),
     strategyModal: document.getElementById('strategy-modal'),
@@ -73,6 +71,10 @@ const buttons = {
     exitConfirmModal: document.getElementById('exit-confirm-modal'),
     exitConfirmBtn: document.getElementById('exit-confirm-btn'),
     exitResumeBtn: document.getElementById('exit-resume-btn'),
+    pauseGameBtn: document.getElementById('pause-game-btn'),
+    pauseModal: document.getElementById('pause-modal'),
+    resumeGameBtn: document.getElementById('resume-game-btn'),
+    quitGameBtn: document.getElementById('quit-game-btn'),
 };
 const displays = {
     timer: document.getElementById('timer'),
@@ -82,8 +84,6 @@ const displays = {
     drillStatus: document.getElementById('drill-status'),
     practiceFeedback: document.getElementById('practice-feedback'),
     performanceText: document.getElementById('performance-text'),
-    analystReaction: document.getElementById('analyst-reaction'),
-    fanReaction: document.getElementById('fan-reaction'),
     gameTimer: document.getElementById('game-timer'),
     gameScore: document.getElementById('game-score'),
     scenarioImage: document.getElementById('scenario-image'),
@@ -121,48 +121,48 @@ let questionTimerInterval = null;
 let isGamePaused = false;
 const sampleQuestions = [
     {
-        image: 'https://play.rosebud.ai/assets/basketball player.png?BrXo',
-        text: "It's a timeout. Your star player just missed a crucial free throw. How do you motivate them?",
+        image: 'https://play.rosebud.ai/assets/Shammgod 1.jpeg?VEwv',
+        text: "Your team looks sloppy with turnovers. As Coach Shammgod, what’s the best way to sharpen their ball security in practice?",
         options: [
-            { text: "Yell at them for missing", correct: false, feedback: "This might crush their confidence." },
-            { text: "Tell them 'Don't worry, you'll get the next one.'", correct: true, feedback: "Positive reinforcement builds confidence!" },
-            { text: "Sub them out immediately", correct: false, feedback: "This could signal a lack of trust." }
+            { text: "Run intense dribbling drills under pressure.", correct: true, feedback: "Correct! Pressure builds skill." },
+            { text: "Focus on shooting mechanics instead of dribbling.", correct: false, feedback: "Incorrect. Ball security is key." },
+            { text: "Cut practice short and save energy for the game.", correct: false, feedback: "Incorrect. Practice makes perfect." }
         ]
     },
     {
-        image: 'https://play.rosebud.ai/assets/african american basketball coach with black suit, whistle and clipboard.png?sKtP',
-        text: "The opponent is on a fast break. What defensive scheme do you call?",
+        image: 'https://play.rosebud.ai/assets/shammgod 2.webp?XYyU',
+        text: "A defender is pressuring your point guard full-court. What Shammgod-style strategy do you give him?",
         options: [
-            { text: "Full-court press", correct: false, feedback: "Risky, could lead to an easy basket if broken." },
-            { text: "Man-to-man defense", correct: false, feedback: "Good, but might not stop the immediate threat." },
-            { text: "Zone defense to protect the paint", correct: true, feedback: "Correct! Clog the lane and force a tough shot." }
+            { text: "Use a hesitation and crossover to create space.", correct: true, feedback: "That's the Shammgod way!" },
+            { text: "Throw a risky long pass up the court.", correct: false, feedback: "Too risky, could lead to a turnover." },
+            { text: "Stand still and wait for help.", correct: false, feedback: "Too passive, you must be assertive." }
         ]
     },
     {
-        image: 'https://play.rosebud.ai/assets/basketball coach.png?1ZFh',
-        text: "Down by 2 with 5 seconds left. What's the final play?",
+        image: 'https://play.rosebud.ai/assets/Shammgod 3.webp?uUl3',
+        text: "A young guard keeps losing the ball under pressure. What advice would Shammgod give?",
         options: [
-            { text: "A quick 2-point shot to tie and go to OT", correct: true, feedback: "Smart! High-percentage shot to stay in the game." },
-            { text: "A desperation 3-point heave", correct: false, feedback: "Too risky! A miss means the game is over." },
-            { text: "Pass to your weakest shooter", correct: false, feedback: "Why would you do that!?" }
+            { text: "Keep working on ball-handling moves every day.", correct: true, feedback: "Correct. Repetition is the father of learning." },
+            { text: "Avoid dribbling altogether and pass immediately.", correct: false, feedback: "That avoids the problem, doesn't solve it." },
+            { text: "Focus only on strength training.", correct: false, feedback: "Strength helps, but skill is essential." }
         ]
     },
     {
-        image: 'https://play.rosebud.ai/assets/basketball coach.png?1ZFh',
-        text: "Team 1 is down by 5 points with 2 minutes left in the 4th quarter. What is the best offensive strategy?",
+        image: 'https://play.rosebud.ai/assets/Shammgod 4.png?BPDH',
+        text: "Shammgod’s legendary move changed how players see ball handling. In today’s game, what’s the value of that skill?",
         options: [
-            { text: "Draw up a play for a three-point shot to quickly cut the deficit.", correct: false, feedback: "A bit risky. A miss leaves you in a tough spot." },
-            { text: "Run a mid-range quick two to keep momentum and play strong defense after.", correct: false, feedback: "A good option, but doesn't stop the clock and leaves the pressure on." },
-            { text: "Attack the basket for a layup and potential foul to score efficiently and stop the clock.", correct: true, feedback: "Excellent choice! High percentage, stops the clock, and puts pressure on their defense." }
+            { text: "Breaking down defenders and creating plays.", correct: true, feedback: "Exactly. It's about creating opportunities." },
+            { text: "Looking flashy without purpose.", correct: false, feedback: "Style must have substance." },
+            { text: "Wasting energy instead of playing defense.", correct: false, feedback: "It's an efficient tool when used right." }
         ]
     },
     {
-        image: 'https://play.rosebud.ai/assets/african american basketball coach with black suit, whistle and clipboard.png?sKtP',
-        text: "The Spurs are up by 3 points with 15 seconds left in the 4th quarter. The opposing team has the ball. What defensive approach makes the most sense?",
+        image: 'https://play.rosebud.ai/assets/Shammgod 5.png?wkuA',
+        text: "Your team is up by 3 with 30 seconds left. The opponent’s best defender pressures your ball-handler. What’s the Shammgod way?",
         options: [
-            { text: "Play straight-up man-to-man defense and contest the three-point shot without fouling.", correct: false, feedback: "Risky! A made three ties the game. Too much can go wrong." },
-            { text: "Intentionally foul before the shot to force the opponent to shoot free throws instead of attempting a tying three.", correct: true, feedback: "The 'Popovich' special! Smart move to not even allow a game-tying attempt." },
-            { text: "Switch on all screens and run shooters off the three-point line, forcing a tough two-point attempt.", correct: false, feedback: "A solid strategy, but still gives them a chance to tie with a lucky shot." }
+            { text: "Trust your handle, control tempo, protect the rock.", correct: true, feedback: "Smart and secure. The championship mentality." },
+            { text: "Launch a quick contested three.", correct: false, feedback: "Unnecessary risk. Control the clock." },
+            { text: "Stand still and wait for the double-team.", correct: false, feedback: "Invites pressure and potential turnovers." }
         ]
     }
 ];
@@ -180,6 +180,28 @@ const speeches = {
         text: "Breathe. Center yourselves. Don’t chase the game—let the game come to you. Remember: basketball is a dance, a rhythm. When we move together, when the ball flows, when we trust the triangle, the game opens. Forget the noise, forget the clock. Just be here, now, in this moment. Play free, play connected, and the result will take care of itself. Trust in each other—and trust in the journey."
     }
 };
+const pressArticles = [
+  {
+    id: "sr-shammgod-nitro2",
+    title: "PUMA All-Pro NITRO 2 “God Shammgod”",
+    source: "Sole Retriever",
+    date: "2024",
+    url: "https://www.soleretriever.com/sneaker-release-dates/puma/other/puma-all-pro-nitro-2-god-shammgod-312308-01",
+    summary: "Coverage of the Shammgod-branded PUMA All-Pro NITRO 2 release.",
+    thumbnail: "https://rosebud.ai/assets/press-sole-retriever.png?v=1",
+    fallback:  "https://play.rosebud.ai/assets/basketball player.png?BrXo"
+  },
+  {
+    id: "nba-magic-staff",
+    title: "Orlando Magic add Joe Prunty and God Shammgod to coaching staff",
+    source: "NBA.com",
+    date: "July 11, 2025",
+    url: "https://www.nba.com/magic/news/orlando-magic-add-joe-prunty-and-god-shammgod-to-coaching-staff-20250711",
+    summary: "Team announcement highlighting Shammgod’s role on the Magic’s coaching staff.",
+    thumbnail: "https://rosebud.ai/assets/press-nba-com.png?v=1",
+    fallback:  "https://play.rosebud.ai/assets/basketball player.png?BrXo"
+  }
+];
 // --- Functions ---
 function switchScreen(screenName) {
     Object.values(screens).forEach(screen => screen.classList.remove('active'));
@@ -277,6 +299,16 @@ function startQuestionTimer() {
         }
     }, 1000);
 }
+function togglePause() {
+    isGamePaused = !isGamePaused;
+    if (isGamePaused) {
+        buttons.pauseModal.classList.remove('hidden');
+        if (questionTimerInterval) clearInterval(questionTimerInterval); // Explicitly clear to be safe
+    } else {
+        buttons.pauseModal.classList.add('hidden');
+        startQuestionTimer(); // This will resume the timer logic
+    }
+}
 function endGame() {
     clearInterval(questionTimerInterval);
     displays.gameTimer.parentElement.classList.remove('urgent');
@@ -293,7 +325,6 @@ function endGame() {
     }
     displays.performanceText.textContent = performanceText;
     
-    generatePressReactions(); // Keep this for flavor
     switchScreen('result');
 }
 function startPractice() {
@@ -520,37 +551,7 @@ function endPractice() {
     }
     displays.performanceText.textContent = performanceText;
     
-    generatePressReactions();
     switchScreen('result');
-}
-function generatePressReactions() {
-    let analystText = '';
-    let fanText = '';
-    
-    if (practiceStats.boostUsed) {
-        if (practiceStats.earlyBoost) {
-            analystText = "Bold move using the boost early! Shows aggressive coaching style.";
-            fanText = "The crowd loves the early energy! Fans are hyped from the start!";
-        } else if (practiceStats.lateBoost) {
-            analystText = "Clutch timing on that boost! Saved it for when it mattered most.";
-            fanText = "Smart coaching! Fans appreciate the strategic timing.";
-        } else {
-            analystText = "Well-timed boost activation. Shows good game management.";
-            fanText = "Perfect moment to energize the team! Crowd erupted!";
-        }
-    } else {
-        analystText = "Conservative approach today. Sometimes patience pays off.";
-        fanText = "Fans were waiting for more energy, but respect the steady approach.";
-    }
-    
-    if (selectedStrategy === 'strategy') {
-        analystText += " The strategic focus really showed in the execution.";
-    } else {
-        analystText += " The motivational approach fired up the players.";
-    }
-    
-    displays.analystReaction.textContent = analystText;
-    displays.fanReaction.textContent = fanText;
 }
 function showLeaderboardPlaceholder() {
     alert('Leaderboard coming soon! Your score: ' + (score || gameScore));
@@ -676,6 +677,75 @@ function closeExitModalAndResume() {
     buttons.exitConfirmModal.classList.add('hidden');
     isGamePaused = false;
 }
+// --- Press Reactions Logic ---
+function showPressReactions() {
+    const container = document.getElementById('press-articles-container');
+    container.innerHTML = ''; // Clear previous articles
+    pressArticles.forEach(article => {
+        const card = document.createElement('div');
+        card.className = 'article-card';
+        card.setAttribute('role', 'link');
+        card.tabIndex = 0;
+        
+        card.innerHTML = `
+            <img src="${article.thumbnail}" alt="${article.title}" class="article-thumbnail" loading="lazy">
+            <div class="article-content">
+                <h3 class="article-title">${article.title}</h3>
+                <p class="article-meta">${article.source} ${article.date ? `&bull; ${article.date}` : ''}</p>
+                <p class="article-summary">${article.summary}</p>
+                <div class="article-actions">
+                    <button class="btn btn-primary read-article-btn">Read Article</button>
+                    <button class="btn-copy-link">Copy link</button>
+                </div>
+            </div>
+        `;
+        
+        const openArticle = () => window.open(article.url, '_blank', 'noopener');
+        
+        card.addEventListener('click', openArticle);
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') openArticle();
+        });
+        
+        card.querySelector('.read-article-btn').addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent card click event from firing too
+            openArticle();
+        });
+        
+        card.querySelector('.btn-copy-link').addEventListener('click', (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(article.url).then(() => {
+                showToast('Link copied!');
+            });
+        });
+        // Add a robust error handler for the image thumbnail
+        const img = card.querySelector('.article-thumbnail');
+        img.onerror = () => {
+            // First failure: try the fallback URL
+            img.src = article.fallback;
+            // Second failure: if the fallback also fails, hide the image
+            img.onerror = () => {
+                img.style.display = 'none';
+            };
+        };
+        
+        container.appendChild(card);
+    });
+    switchScreen('pressReactions');
+}
+function showToast(message) {
+    let toast = document.querySelector('.toast-notification');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
 // --- Event Listeners ---
 buttons.strategyBtn.addEventListener('click', openStrategyModal);
 buttons.motivationBtn.addEventListener('click', openMotivationModal);
@@ -684,6 +754,12 @@ buttons.lockInBtn.addEventListener('click', lockInStrategy);
 buttons.strategyBackBtn.addEventListener('click', closeStrategyModal);
 buttons.exitConfirmBtn.addEventListener('click', goToLanding);
 buttons.exitResumeBtn.addEventListener('click', closeExitModalAndResume);
+buttons.pauseGameBtn.addEventListener('click', togglePause);
+buttons.resumeGameBtn.addEventListener('click', togglePause);
+buttons.quitGameBtn.addEventListener('click', () => {
+    buttons.pauseModal.classList.add('hidden');
+    goToLanding();
+});
 buttons.motivationChoiceBtns.forEach(btn => {
     btn.addEventListener('click', (e) => showSpeech(e.currentTarget.dataset.coach));
 });
@@ -692,8 +768,7 @@ buttons.speechBackBtn.addEventListener('click', showMotivationChoices);
 buttons.copySpeechBtn.addEventListener('click', copySpeechToClipboard);
 buttons.playDemo.addEventListener('click', startGame);
 buttons.sneakerDrop.addEventListener('click', () => switchScreen('sneakerDrop'));
-buttons.pressReactions.addEventListener('click', () => switchScreen('pressReactions'));
-buttons.practiceMode.addEventListener('click', startPracticeMode);
+buttons.pressReactions.addEventListener('click', showPressReactions);
 buttons.callPlay.addEventListener('click', callPlay);
 buttons.sneakerPickup.addEventListener('click', activateBoost);
 buttons.leaderboard.addEventListener('click', showLeaderboardPlaceholder);
@@ -701,7 +776,6 @@ buttons.replay.addEventListener('click', startGame);
 buttons.unlockFullGame.addEventListener('click', () => alert('Full game unlocked! (Feature coming soon)'));
 buttons.learnMore.addEventListener('click', () => alert('Learn more about our premium sneaker collection! (Link coming soon)'));
 buttons.sneakerBack.addEventListener('click', goToLanding);
-buttons.replayDrill.addEventListener('click', startPractice); // Should restart practice, not game
 buttons.pressBack.addEventListener('click', goToLanding);
 buttons.backToHomeResults.addEventListener('click', goToLanding);
 // --- Initial Setup ---
@@ -725,6 +799,9 @@ window.addEventListener('keydown', (e) => {
         if (!buttons.exitConfirmModal.classList.contains('hidden')) {
             closeExitModalAndResume();
         }
+    }
+    if (e.key === 'p' && screens.game.classList.contains('active')) {
+        togglePause();
     }
 });
 (async () => {

@@ -12,29 +12,32 @@
     <div id="game-container">
         <!-- Landing Screen -->
         <div id="landing-screen" class="screen active">
-            <div class="screen-content">
-                <div class="landing-header">
-                </div>
-                <div class="landing-body">
-                    <div class="strategy-choice">
-                        <h3>Choose Your Opening Approach:</h3>
-                        <div class="choice-buttons">
-                            <button id="strategy-btn" class="btn btn-choice">Strategy Focus</button>
-                            <button id="motivation-btn" class="btn btn-choice">Motivation Speech</button>
+            <div id="landing-left-panel"></div>
+            <div id="landing-right-panel">
+                <div class="screen-content">
+                    <div class="landing-header">
+                    </div>
+                    <div class="landing-body">
+                        <div class="strategy-choice">
+                            <h3>Choose Your Opening Approach:</h3>
+                            <div class="choice-buttons">
+                                <button id="strategy-btn" class="btn btn-choice">Strategy Focus</button>
+                                <button id="motivation-btn" class="btn btn-choice">Motivation Speech</button>
+                            </div>
+                        </div>
+                        <div class="main-actions">
+                            <button id="play-demo-btn" class="btn btn-primary btn-large">Play Demo</button>
+                            <button id="sneaker-drop-btn" class="btn btn-secondary">Sneaker Drop</button>
+                            <button id="press-reactions-btn" class="btn btn-secondary">Press Reactions</button>
                         </div>
                     </div>
-                    <div class="main-actions">
-                        <button id="play-demo-btn" class="btn btn-primary btn-large">Play Demo</button>
-                        <button id="sneaker-drop-btn" class="btn btn-secondary">Sneaker Drop</button>
-                        <button id="practice-mode-btn" class="btn btn-secondary">Practice Mode</button>
-                        <button id="press-reactions-btn" class="btn btn-secondary">Press Reactions</button>
-                    </div>
+                    <div id="focus-display" class="focus-pill hidden"></div>
                 </div>
-                <div id="focus-display" class="focus-pill hidden"></div>
             </div>
         </div>
         <!-- Main Game Screen -->
         <div id="game-screen" class="screen">
+            <button id="pause-game-btn" class="btn-icon pause-btn" aria-label="Pause Game">||</button>
             <!-- Back button is programmatically handled -->
             <div id="hud">
                 <div id="game-timer-container">
@@ -135,21 +138,12 @@
         </div>
         <!-- Press Reactions Screen -->
         <div id="press-reactions-screen" class="screen">
-            <!-- Back button is programmatically handled -->
             <div class="screen-content">
                 <h1 class="title">Press Reactions</h1>
-                <div id="press-content">
-                    <div class="press-card">
-                        <h3>📰 Sports Analyst</h3>
-                        <p id="analyst-reaction">Your coaching decisions are being analyzed...</p>
-                    </div>
-                    <div class="press-card">
-                        <h3>🎤 Fan Reaction</h3>
-                        <p id="fan-reaction">The crowd is waiting to see your impact...</p>
-                    </div>
+                <div id="press-articles-container">
+                    <!-- Articles will be dynamically injected here -->
                 </div>
-                <div class="button-group">
-                    <button id="replay-drill-btn" class="btn btn-primary">Replay Drill</button>
+                <div class="button-group" style="margin-top: 20px;">
                     <button id="press-back-btn" class="btn btn-secondary">Back to Main</button>
                 </div>
             </div>
@@ -217,6 +211,16 @@
         </div>
     </div>
     <script type="module" src="main.js"></script>
+    <!-- Pause Menu Modal -->
+    <div id="pause-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 class="modal-title">Game Paused</h2>
+            <div class="modal-actions">
+                <button id="resume-game-btn" class="btn btn-primary">Resume</button>
+                <button id="quit-game-btn" class="btn btn-secondary">Quit to Home</button>
+            </div>
+        </div>
+    </div>
     <!-- Exit Confirmation Modal -->
     <div id="exit-confirm-modal" class="modal-overlay hidden">
         <div class="modal-content">
